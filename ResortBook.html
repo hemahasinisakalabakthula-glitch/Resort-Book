@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResortBook - Resort Booking</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f6f7f8;
+            color: #222;
+        }
+
+        .navbar {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 50px;
+            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            color: #087f5b;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .nav-links a,
+        .nav-links button {
+            background: none;
+            border: 0;
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .nav-links a:hover,
+        .nav-links button:hover {
+            color: #087f5b;
+        }
+
+        #userArea {
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+
+        #userName {
+            font-weight: bold;
+        }
+
+        .logout {
+            color: #e03131 !important;
+        }
+
+        .hero {
+            min-height: 420px;
+            padding: 80px 20px;
+            text-align: center;
+            background:
+                linear-gradient(rgba(0, 0, 0, .45), rgba(0, 0, 0, .45)),
+                url("https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg") center/cover;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin: 30px 0 15px;
+        }
+
+        .hero p {
+            font-size: 19px;
+            margin-bottom: 35px;
+        }
+
+        .search-box {
+            max-width: 1050px;
+            margin: auto;
+            padding: 12px;
+            background: white;
+            border-radius: 18px;
+            display: flex;
+            gap: 10px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, .25);
+        }
+
+        .search-box input {
+            flex: 1;
+            min-width: 0;
+            padding: 16px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .search-box button {
+            padding: 16px 28px;
+            border: 0;
+            border-radius: 10px;
+            background: #087f5b;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .search-box button:hover {
+            background: #066b4d;
+        }
+
+        #message {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .resorts {
+            padding: 50px;
+        }
+
+        .resorts h2 {
+            font-size: 30px;
+            margin-bottom: 30px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, .09);
+            transition: .3s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, .15);
+        }
+
+        .image-box {
+            position: relative;
+        }
+
+        .card img {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .favorite {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 42px;
+            height: 42px;
+            border: 0;
+            border-radius: 50%;
+            background: white;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .card-content {
+            padding: 20px;
+        }
+
+        .card h3 {
+            margin: 0 0 10px;
+        }
+
+        .location {
+            color: #777;
+            margin-bottom: 10px;
+        }
+
+        .rating {
+            margin-bottom: 12px;
+        }
+
+        .price {
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            inset: 0;
+            background: rgba(0, 0, 0, .55);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            width: 430px;
+            max-width: 100%;
+            max-height: 90vh;
+            overflow: auto;
+            padding: 30px;
+            border-radius: 18px;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        .modal-content h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        .main-btn {
+            width: 100%;
+            padding: 14px;
+            border: 0;
+            border-radius: 8px;
+            background: #087f5b;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .modal-message {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .switch {
+            text-align: center;
+            margin-top: 18px;
+        }
+
+        .switch span {
+            color: #087f5b;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .details-image {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+
+        .details-price {
+            font-size: 21px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .book-btn {
+            width: 100%;
+            padding: 15px;
+            border: 0;
+            border-radius: 10px;
+            background: #087f5b;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .booking-item {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 12px;
+        }
+
+        .booking-item strong {
+            color: #087f5b;
+        }
+
+        footer {
+            background: white;
+            text-align: center;
+            padding: 30px;
+            margin-top: 30px;
+            border-top: 1px solid #ddd;
+            color: #777;
+        }
+
+        @media(max-width:800px) {
+            .navbar {
+                padding: 0 20px;
+            }
+
+            .nav-links a {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 34px;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-box input,
+            .search-box button {
+                width: 100%;
+            }
+
+            .resorts {
+                padding: 25px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            ResortBook 🏝️
+        </div>
+        <div class="nav-links">
+            <a href="#" onclick="goHome()">
+                Home
+            </a>
+            <a href="#" onclick="openBookings()">
+                My Bookings
+            </a>
+            <a href="#" id="loginLink" onclick="openLogin()">
+                Login
+            </a>
+            <a href="#" id="registerLink" onclick="openRegister()">
+                Register
+            </a>
+            <div id="userArea">
+                <span id="userName"></span>
+                <button class="logout" onclick="logout()">
+                    Logout
+                </button>
+            </div>
+        </div>
+    </nav>
+    <section class="hero">
+        <h1>
+            Find Your Perfect Resort
+        </h1>
+        <p>
+            Relax, explore and create unforgettable memories.
+        </p>
+        <div class="search-box">
+            <input type="text" id="location" placeholder="Where do you want to go?">
+            <input type="date" id="checkin">
+            <input type="date" id="checkout">
+            <input type="number" id="guests" min="1" placeholder="Guests">
+            <button onclick="searchResorts()">
+                Search
+            </button>
+        </div>
+        <div id="message"></div>
+    </section>
+    <section class="resorts">
+        <h2>
+            Popular Resorts 🌴
+        </h2>
+        <div class="cards">
+            <div class="card" data-location="goa" data-title="Ocean Pearl Resort" data-price="4500"
+                data-image="https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg">
+                <div class="image-box">
+                    <img src="https://images.pexels.com/photos/261102/pexels-photo-261102.jpeg"
+                        alt="Ocean Pearl Resort">
+                    <button class="favorite" onclick="favorite(event,this)">
+                        ♡
+                    </button>
+                </div>
+                <div class="card-content">
+                    <h3>
+                        Ocean Pearl Resort
+                    </h3>
+                    <div class="location">
+                        Goa, India
+                    </div>
+                    <div class="rating">
+                        ⭐ 4.9
+                    </div>
+                    <div class="price">
+                        ₹4,500 / night
+                    </div>
+                </div>
+            </div>
+            <div class="card" data-location="kerala" data-title="Palm Paradise Resort" data-price="3800"
+                data-image="https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg">
+                <div class="image-box">
+                    <img src="https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg"
+                        alt="Palm Paradise Resort">
+                    <button class="favorite" onclick="favorite(event,this)">
+                        ♡
+                    </button>
+                </div>
+                <div class="card-content">
+                    <h3>
+                        Palm Paradise Resort
+                    </h3>
+                    <div class="location">
+                        Kerala, India
+                    </div>
+                    <div class="rating">
+                        ⭐ 4.8
+                    </div>
+                    <div class="price">
+                        ₹3,800 / night
+                    </div>
+                </div>
+            </div>
+            <div class="card" data-location="ooty" data-title="Green Valley Resort" data-price="3200"
+                data-image="https://images.pexels.com/photos/261395/pexels-photo-261395.jpeg">
+                <div class="image-box">
+                    <img src="https://images.pexels.com/photos/261395/pexels-photo-261395.jpeg"
+                        alt="Green Valley Resort">
+                    <button class="favorite" onclick="favorite(event,this)">
+                        ♡
+                    </button>
+                </div>
+                <div class="card-content">
+                    <h3>
+                        Green Valley Resort
+                    </h3>
+                    <div class="location">
+                        Ooty, India
+                    </div>
+                    <div class="rating">
+                        ⭐ 4.7
+                    </div>
+                    <div class="price">
+                        ₹3,200 / night
+                    </div>
+                </div>
+            </div>
+            <div class="card" data-location="hyderabad" data-title="Royal Lake Resort" data-price="4200"
+                data-image="https://images.pexels.com/photos/189296/pexels-photo-189296.jpeg">
+                <div class="image-box">
+                    <img src="https://images.pexels.com/photos/189296/pexels-photo-189296.jpeg" alt="Royal Lake Resort">
+                    <button class="favorite" onclick="favorite(event,this)">
+                        ♡
+                    </button>
+                </div>
+                <div class="card-content">
+                    <h3>
+                        Royal Lake Resort
+                    </h3>
+                    <div class="location">
+                        Hyderabad, India
+                    </div>
+                    <div class="rating">
+                        ⭐ 4.6
+                    </div>
+                    <div class="price">
+                        ₹4,200 / night
+                    </div>
+                </div>
+            </div>
+            <div class="card" data-location="manali" data-title="Mountain Mist Resort" data-price="3600"
+                data-image="https://images.pexels.com/photos/338504/pexels-photo-338504.jpeg">
+                <div class="image-box">
+                    <img src="https://images.pexels.com/photos/338504/pexels-photo-338504.jpeg"
+                        alt="Mountain Mist Resort">
+                    <button class="favorite" onclick="favorite(event,this)">
+                        ♡
+                    </button>
+                </div>
+                <div class="card-content">
+                    <h3>
+                        Mountain Mist Resort
+                    </h3>
+                    <div class="location">
+                        Manali, India
+                    </div>
+                    <div class="rating">
+                        ⭐ 4.8
+                    </div>
+                    <div class="price">
+                        ₹3,600 / night
+                    </div>
+                </div>
+            </div>
+            <div class="card" data-location="bangalore" data-title="Royal Garden Resort" data-price="4000"
+                data-image="https://images.pexels.com/photos/261101/pexels-photo-261101.jpeg">
+                <div class="image-box">
+                    <img src="https://images.pexels.com/photos/261101/pexels-photo-261101.jpeg"
+                        alt="Royal Garden Resort">
+                    <button class="favorite" onclick="favorite(event,this)">
+                        ♡
+                    </button>
+                </div>
+                <div class="card-content">
+                    <h3>
+                        Royal Garden Resort
+                    </h3>
+                    <div class="location">
+                        Bangalore, India
+                    </div>
+                    <div class="rating">
+                        ⭐ 4.7
+                    </div>
+                    <div class="price">
+                        ₹4,000 / night
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLogin()">
+                &times;
+            </span>
+            <h2>
+                Login 🔐
+            </h2>
+            <input type="email" id="loginEmail" placeholder="Email">
+            <input type="password" id="loginPassword" placeholder="Password">
+            <button class="main-btn" onclick="loginUser()">
+                Login
+            </button>
+            <div class="modal-message" id="loginMessage">
+            </div>
+            <div class="switch">
+                Don't have an account?
+                <span onclick="switchRegister()">
+                    Register
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeRegister()">
+                &times;
+            </span>
+            <h2>
+                Create Account 📝
+            </h2>
+            <input type="text" id="registerName" placeholder="Full Name">
+            <input type="email" id="registerEmail" placeholder="Email">
+            <input type="password" id="registerPassword" placeholder="Password">
+            <button class="main-btn" onclick="registerUser()">
+                Register
+            </button>
+            <div class="modal-message" id="registerMessage">
+            </div>
+            <div class="switch">
+                Already have an account?
+                <span onclick="switchLogin()">
+                    Login
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="detailsModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeDetails()">
+                &times;
+            </span>
+            <img id="detailsImage" class="details-image" src="" alt="Resort">
+            <h2 id="detailsTitle"></h2>
+            <p id="detailsLocation"></p>
+            <p>
+                ⭐ Excellent resort rating
+            </p>
+            <div class="details-price" id="detailsPrice">
+            </div>
+            <button class="book-btn" onclick="startBooking()">
+                Book Now 📅
+            </button>
+        </div>
+    </div>
+    <div class="modal" id="bookingModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeBooking()">
+                &times;
+            </span>
+            <h2>
+                Book Your Resort 🏝️
+            </h2>
+            <p id="bookingProperty"></p>
+            <input type="date" id="bookingCheckin">
+            <input type="date" id="bookingCheckout">
+            <input type="number" id="bookingGuests" min="1" placeholder="Number of guests">
+            <button class="main-btn" onclick="confirmBooking()">
+                Confirm Booking
+            </button>
+            <div class="modal-message" id="bookingMessage">
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="bookingsModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeBookings()">
+                &times;
+            </span>
+            <h2>
+                My Bookings 🧾
+            </h2>
+            <div id="bookingList"></div>
+        </div>
+    </div>
+    <footer>
+        © 2026 ResortBook. All rights reserved.
+    </footer>
+    <script>
+        let selectedResort = null;
+        function goHome() {
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+        function openLogin() {
+            document
+                .getElementById("loginModal")
+                .style.display = "flex";
+        }
+        function closeLogin() {
+            document
+                .getElementById("loginModal")
+                .style.display = "none";
+        }
+        function openRegister() {
+            document
+                .getElementById("registerModal")
+                .style.display = "flex";
+        }
+        function closeRegister() {
+            document
+                .getElementById("registerModal")
+                .style.display = "none";
+        }
+        function switchRegister() {
+            closeLogin();
+            openRegister();
+        }
+        function switchLogin() {
+            closeRegister();
+            openLogin();
+        }
+        function registerUser() {
+            const name =
+                document.getElementById("registerName").value.trim();
+            const email =
+                document.getElementById("registerEmail").value.trim();
+            const password =
+                document.getElementById("registerPassword").value.trim();
+            const message =
+                document.getElementById("registerMessage");
+            if (
+                name === "" ||
+                email === "" ||
+                password === ""
+            ) {
+                message.innerText =
+                    "Please fill all fields.";
+                message.style.color = "red";
+                return;
+            }
+            if (password.length < 6) {
+                message.innerText =
+                    "Password must be at least 6 characters.";
+                message.style.color = "red";
+                return;
+            }
+            const user = {
+                name: name,
+                email: email,
+                password: password
+            };
+            localStorage.setItem(
+                "resortUser",
+                JSON.stringify(user)
+            );
+            message.innerText =
+                "Account created successfully! 🎉";
+            message.style.color = "green";
+            setTimeout(function () {
+                closeRegister();
+                openLogin();
+            }, 1000);
+        }
+        function loginUser() {
+            const email =
+                document.getElementById("loginEmail").value.trim();
+            const password =
+                document.getElementById("loginPassword").value.trim();
+            const message =
+                document.getElementById("loginMessage");
+            const user =
+                JSON.parse(
+                    localStorage.getItem("resortUser")
+                );
+            if (!user) {
+                message.innerText =
+                    "Please register first.";
+                message.style.color = "red";
+                return;
+            }
+            if (
+                email !== user.email ||
+                password !== user.password
+            ) {
+                message.innerText =
+                    "Invalid email or password.";
+                message.style.color = "red";
+                return;
+            }
+            localStorage.setItem(
+                "resortLoggedIn",
+                "true"
+            );
+            message.innerText =
+                "Login successful! 🎉";
+            message.style.color = "green";
+            setTimeout(function () {
+                closeLogin();
+                updateUser();
+            }, 800);
+        }
+        function logout() {
+            localStorage.removeItem(
+                "resortLoggedIn"
+            );
+            updateUser();
+            alert("Logged out successfully! 👋");
+        }
+        function updateUser() {
+            const loggedIn =
+                localStorage.getItem("resortLoggedIn");
+            const user =
+                JSON.parse(
+                    localStorage.getItem("resortUser")
+                );
+            const loginLink =
+                document.getElementById("loginLink");
+            const registerLink =
+                document.getElementById("registerLink");
+            const userArea =
+                document.getElementById("userArea");
+            const userName =
+                document.getElementById("userName");
+            if (loggedIn === "true" && user) {
+                loginLink.style.display = "none";
+                registerLink.style.display = "none";
+                userArea.style.display = "flex";
+                userName.innerText =
+                    "Hi, " + user.name;
+            } else {
+                loginLink.style.display = "inline";
+                registerLink.style.display = "inline";
+                userArea.style.display = "none";
+            }
+        }
+        function searchResorts() {
+            const location =
+                document
+                    .getElementById("location")
+                    .value
+                    .trim()
+                    .toLowerCase();
+            const checkin =
+                document.getElementById("checkin").value;
+            const checkout =
+                document.getElementById("checkout").value;
+            const guests =
+                document.getElementById("guests").value;
+            const message =
+                document.getElementById("message");
+            const cards =
+                document.querySelectorAll(".card");
+            if (location === "") {
+                message.innerText =
+                    "Please enter a location.";
+                message.style.color = "red";
+                showAll();
+                return;
+            }
+            if (checkin === "" || checkout === "") {
+                message.innerText =
+                    "Please select your dates.";
+                message.style.color = "red";
+                showAll();
+                return;
+            }
+            if (checkout <= checkin) {
+                message.innerText =
+                    "Check-out must be after check-in.";
+                message.style.color = "red";
+                showAll();
+                return;
+            }
+            if (guests === "" || Number(guests) < 1) {
+                message.innerText =
+                    "Please enter number of guests.";
+                message.style.color = "red";
+                showAll();
+                return;
+            }
+            let found = false;
+            cards.forEach(function (card) {
+                if (
+                    card.dataset.location
+                        .includes(location)
+                ) {
+                    card.style.display = "block";
+                    found = true;
+                } else {
+                    card.style.display = "none";
+                }
+            });
+            if (found) {
+                message.innerText =
+                    "Resorts found! 🏝️";
+                message.style.color = "green";
+            } else {
+                message.innerText =
+                    "No resorts found.";
+                message.style.color = "red";
+            }
+        }
+        function showAll() {
+            document
+                .querySelectorAll(".card")
+                .forEach(function (card) {
+                    card.style.display = "block";
+                });
+        }
+        function favorite(event, button) {
+            event.stopPropagation();
+            if (button.innerText === "♡") {
+                button.innerText = "♥";
+            } else {
+                button.innerText = "♡";
+            }
+        }
+        document
+            .querySelectorAll(".card")
+            .forEach(function (card) {
+                card.addEventListener("click", function () {
+                    selectedResort = {
+                        title: card.dataset.title,
+                        location:
+                            card.querySelector(".location").innerText,
+                        price: card.dataset.price,
+                        image: card.dataset.image
+                    };
+                    document
+                        .getElementById("detailsImage")
+                        .src = selectedResort.image;
+                    document
+                        .getElementById("detailsTitle")
+                        .innerText = selectedResort.title;
+                    document
+                        .getElementById("detailsLocation")
+                        .innerText = selectedResort.location;
+                    document
+                        .getElementById("detailsPrice")
+                        .innerText =
+                        "₹" + selectedResort.price + " / night";
+                    document
+                        .getElementById("detailsModal")
+                        .style.display = "flex";
+                });
+            });
+        function closeDetails() {
+            document
+                .getElementById("detailsModal")
+                .style.display = "none";
+        }
+        function startBooking() {
+            const loggedIn =
+                localStorage.getItem("resortLoggedIn");
+            if (loggedIn !== "true") {
+                closeDetails();
+                openLogin();
+                alert(
+                    "Please login before booking."
+                );
+                return;
+            }
+            closeDetails();
+            document
+                .getElementById("bookingProperty")
+                .innerText =
+                selectedResort.title +
+                " - " +
+                selectedResort.location;
+            document
+                .getElementById("bookingModal")
+                .style.display = "flex";
+        }
+        function closeBooking() {
+            document
+                .getElementById("bookingModal")
+                .style.display = "none";
+        }
+        function confirmBooking() {
+            const checkin =
+                document.getElementById("bookingCheckin").value;
+            const checkout =
+                document.getElementById("bookingCheckout").value;
+            const guests =
+                document.getElementById("bookingGuests").value;
+            const message =
+                document.getElementById("bookingMessage");
+            if (
+                checkin === "" ||
+                checkout === "" ||
+                guests === ""
+            ) {
+                message.innerText =
+                    "Please fill all booking details.";
+                message.style.color = "red";
+                return;
+            }
+            if (checkout <= checkin) {
+                message.innerText =
+                    "Check-out must be after check-in.";
+                message.style.color = "red";
+                return;
+            }
+            const booking = {
+                resort: selectedResort.title,
+                location: selectedResort.location,
+                price: selectedResort.price,
+                checkin: checkin,
+                checkout: checkout,
+                guests: guests
+            };
+            let bookings =
+                JSON.parse(
+                    localStorage.getItem("resortBookings")
+                ) || [];
+            bookings.push(booking);
+            localStorage.setItem(
+                "resortBookings",
+                JSON.stringify(bookings)
+            );
+            message.innerText =
+                "Booking confirmed! 🎉";
+            message.style.color = "green";
+            setTimeout(function () {
+                closeBooking();
+                alert(
+                    "Resort booked successfully! 🏝️"
+                );
+            }, 800);
+        }
+        function openBookings() {
+            const loggedIn =
+                localStorage.getItem("resortLoggedIn");
+            if (loggedIn !== "true") {
+                openLogin();
+                alert(
+                    "Please login to see your bookings."
+                );
+                return;
+            }
+            const list =
+                document.getElementById("bookingList");
+            const bookings =
+                JSON.parse(
+                    localStorage.getItem("resortBookings")
+                ) || [];
+            list.innerHTML = "";
+            if (bookings.length === 0) {
+                list.innerHTML =
+                    "<p>No bookings yet.</p>";
+            } else {
+                bookings.forEach(function (booking) {
+                    list.innerHTML += `
+                <div class="booking-item">
+                    <strong>
+                        ${booking.resort}
+                    </strong>
+                    <p>
+                        📍 ${booking.location}
+                    </p>
+                    <p>
+                        📅 ${booking.checkin}
+                        → ${booking.checkout}
+                    </p>
+                    <p>
+                        👥 ${booking.guests} guest(s)
+                    </p>
+                    <p>
+                        💰 ₹${booking.price} / night
+                    </p>
+                </div>
+            `;
+                });
+            }
+            document
+                .getElementById("bookingsModal")
+                .style.display = "flex";
+        }
+        function closeBookings() {
+            document
+                .getElementById("bookingsModal")
+                .style.display = "none";
+        }
+        window.onclick = function (event) {
+            document
+                .querySelectorAll(".modal")
+                .forEach(function (modal) {
+                    if (event.target === modal) {
+                        modal.style.display = "none";
+                    }
+                });
+        };
+        updateUser();
+    </script>
+</body>
+
+</html>
